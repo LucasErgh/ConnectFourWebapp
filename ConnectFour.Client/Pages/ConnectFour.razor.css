@@ -1,0 +1,17 @@
+.game-board {
+    width: 75%;
+    margin: auto;
+    text-align: center;
+}
+
+.game-row {
+    margin-top: 0;
+    height: 100px;
+}
+
+.game-button {
+    width: 100px;
+    height: 100px;
+    background-color: #fff; /* Default color or use classes for color states */
+    cursor: pointer;
+}

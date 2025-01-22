@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ConnectFour.Client")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+abc9bcbd9929959f1e928db04d51dd9c90193c54")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0bab3dd9edb4a3cb2f15de1bf84ca14bc4122e94")]
 [assembly: System.Reflection.AssemblyProductAttribute("ConnectFour.Client")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ConnectFour.Client")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
