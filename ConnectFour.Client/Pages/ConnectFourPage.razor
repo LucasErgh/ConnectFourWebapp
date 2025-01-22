@@ -1,0 +1,105 @@
+@page "/ConnectFourPage"
+@rendermode InteractiveWebAssembly
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager Navigation
+@implements IAsyncDisposable
+
+<PageTitle>Connect Four</PageTitle>
+
+@* Join Game Interface *@
+@if(!inGame){
+    <h3>Room Code</h3>
+    <input type="text">
+    <p></p>
+    <button>Enter Room</button>
+    <button>Create Room</button>
+
+    <h3>Local Multiplayer</h3>
+    <button>Play Localy</button>
+}
+
+@* Display Game Board *@
+<div class="game-board">
+    <h1 style="width: 75%; margin: auto; text-align: center;">Connect Four</h1>
+
+    <h3 style="width: 75%; margin: auto; text-align: center;">@subheading</h3>
+
+       @for(int i = 0; i < 6; ++i){
+        <div class="game-row">
+            @for(int j = 0; j < 7; ++j){
+                int r = i, c = j;
+                int t = board[i,j]; 
+                string color = (t == 1) ? "#ff725b" : (t == 2) ? "#576dc8" : "00f";
+                <button class="game-button" style="background-color: @color;" @onclick="() => Send(1, c)" ></button>
+            }
+        </div>
+    }
+</div>
+
+<p></p> @* I'm sure this is bad but im using a p tag for spacing *@
+
+<div style="width: 75%; margin: auto; text-align: center;">
+    <button style="width: 300px; height: 100px;" @onclick="Forfeit">Forfeit Game</button>
+</div>
+
+<div>@text</div>
+
+@code {
+    private HubConnection? hubConnection;
+    
+    string subheading = "Click anywhere to place the first tile.";
+    public string text = "";
+    
+    private int[,] board = new int[6,7];
+    private string RoomCode = "";
+    private string? ErrMsg;
+    public bool inGame = false;
+    private bool? myTurn;
+    private int MessageTypeRecv;
+    private int MessageRecv;
+    private int row;
+    private int col;
+    protected override async Task OnInitializedAsync(){
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("/connectfourhub"))
+            .Build();
+
+        // To-Do handle received message
+        hubConnection.On<int, int>("ReceiveMessage", (row, col) => {
+            board[row, col] = 1;
+            InvokeAsync(StateHasChanged);
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    // temp comment message types
+    //    1 - New Room
+    //    2 - join room
+    //    2 - player move
+    //    3 - forfeit
+    //    4 - your turn
+
+    private async Task Send(int MessageType, int col){
+        if(hubConnection is not null){
+        await hubConnection.SendAsync("SendMessage", MessageType, col);
+        }
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+
+    public void ButtonPush(int column){
+        if(myTurn == true){
+            myTurn = false;
+        }
+    }
+    public void Forfeit(){
+
+    }
+}
+
