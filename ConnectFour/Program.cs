@@ -11,15 +11,15 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddSignalR();
 
-builder.Services.AddResponseCompression(opts =>
-{
-    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-        [ "application/octet-stream"]);
-});
+// builder.Services.AddResponseCompression(opts =>
+// {
+//     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+//         [ "application/octet-stream"]);
+// });
 
 var app = builder.Build();
 
-app.UseResponseCompression();
+// app.UseResponseCompression();
 
 
 // Configure the HTTP request pipeline.
@@ -44,5 +44,5 @@ app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(ConnectFour.Client._Imports).Assembly);
 
-app.MapHub<ConnectFourHub>("/connectfourpage");
+app.MapHub<ConnectFourHub>("/connectfourhub");
 app.Run();

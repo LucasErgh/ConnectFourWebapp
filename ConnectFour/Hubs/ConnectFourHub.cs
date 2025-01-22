@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.SignalR;
 
-namespace ConnectFour.Hubs {
+namespace ConnectFour.Hubs; 
     public class ConnectFourHub : Hub {
-        public async Task SendMessage(string GameRoom, string Message){
-            await Clients.All.SendAsync("ReceiveMessage", GameRoom, Message);
+        private ConnectFourGame board = new ConnectFourGame();
+        public async Task SendMessage(int GameRoom, int Message){
+            board.playerMove(Message);
+            await Clients.All.SendAsync("ReceiveMessage", 0, Message);
         }
     }
-}
+
 public enum Token{
         empty,
         red,
