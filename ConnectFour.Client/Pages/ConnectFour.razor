@@ -5,6 +5,16 @@
 @implements IAsyncDisposable
 
 <PageTitle>Connect Four</PageTitle>
+@if(!inGame){
+    <h3>Room Code</h3>
+    <input type="text">
+    <p></p>
+    <button>Enter Room</button>
+    <button>Create Room</button>
+
+    <h3>Local Multiplayer</h3>
+    <button>Play Localy</button>
+}
 <div class="game-board">
     <h1 style="width: 75%; margin: auto; text-align: center;">Connect Four</h1>
 
@@ -34,6 +44,7 @@
     [Parameter]
     string subheading = "Click anywhere to place the first tile.";
     public string text = "";
+    public bool inGame = false;
     public void ButtonPush(int column){
 
     }
