@@ -1,7 +1,7 @@
 using ConnectFour.Client.Pages;
 using ConnectFour.Components;
-using ConnectFour.Hubs;
 using Microsoft.AspNetCore.ResponseCompression;
+using ConnectFour.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,10 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
-var app = builder.Build();
-app.UseResponseCompression();
-
-// SignalR and Response Compression Middleware services
 builder.Services.AddSignalR();
 
 builder.Services.AddResponseCompression(opts =>
@@ -20,6 +16,11 @@ builder.Services.AddResponseCompression(opts =>
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
         [ "application/octet-stream"]);
 });
+
+var app = builder.Build();
+
+app.UseResponseCompression();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -43,5 +44,5 @@ app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(ConnectFour.Client._Imports).Assembly);
 
-app.MapHub<ConnectFourHub>("/connectfour");
+app.MapHub<ConnectFourHub>("/connectfourpage");
 app.Run();
