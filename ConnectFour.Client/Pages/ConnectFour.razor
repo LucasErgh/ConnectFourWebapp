@@ -28,8 +28,8 @@
         <div class="game-row">
             @for(int j = 0; j < 7; ++j){
                 int r = i, c = j;
-                Token t = board.getCell(i,j); 
-                string color = (t == Token.red) ? "#ff725b" : (t == Token.blue) ? "#576dc8" : "00f";
+                int t = board[i,j]; 
+                string color = (t == 1) ? "#ff725b" : (t == 2) ? "#576dc8" : "00f";
                 <button class="game-button" style="background-color: @color;" @onclick="() => ButtonPush(c)" ></button>
             }
         </div>
@@ -45,12 +45,56 @@
 <div>@text</div>
 
 @code {
-    [Parameter]
+    private HubConnection? hubConnection;
+    
     string subheading = "Click anywhere to place the first tile.";
     public string text = "";
+    
+    private int[6,7] board = new int[6,7];
+    private string RoomCode;
+    private string? ErrMsg;
     public bool inGame = false;
-    public void ButtonPush(int column){
+    private bool? myTurn;
 
+    using System.Net.WebSockets;
+    using System.Data;
+    using System.Data;
+    protected override OnInitializedAsync(){
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("/connectfourhub"))
+            .Build();
+
+        private int MessageTypeRecv;
+        private int MessageRecv;
+        private int row;
+        private int col;
+
+        // To-Do handle received message
+        hubConnection.On<int, int>("ReceiveMessage", (row, col) => {
+            board[col, row] = 1;
+            InvokeAsync(StateHasChanged);
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    // temp comment message types
+    //    1 - New Room
+    //    2 - join room
+    //    2 - player move
+    //    3 - forfeit
+    //    4 - your turn
+
+    private async Task Send(int MesageType, int col){
+        if(hubConnection is not null){
+            await hubConnection.SendAsync("SendMessage", RoomCode, col);
+        }
+    }
+    public void ButtonPush(int column){
+        if(myTurn){
+            Send(2, column);
+            myTurn = false;
+        }
     }
     public void Forfeit(){
 
